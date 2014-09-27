@@ -33,10 +33,16 @@
   margin: 5px 0 0 5px;
   padding: 0;
 }
+.sf-menu.sf-style-green li a.offers-link{
+  text-transform: uppercase;
+  text-decoration: underline;
+  color: red;
+}
 .sf-menu.sf-style-green li,
 .sf-menu.sf-style-green.sf-navbar {
   background: #84c225;
   padding-right:15px!important;
+  float: right!important;
 }
 .sf-menu.sf-style-green li li {
   background: #84c225;

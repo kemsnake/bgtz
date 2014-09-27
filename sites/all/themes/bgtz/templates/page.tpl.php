@@ -117,6 +117,11 @@
               <h2<?php print $site_slogan_attributes; ?>><?php print $site_slogan; ?></h2>
             <?php endif; ?>
 
+            <div class="social-links">
+              <a target="_blank" href="https://www.facebook.com/pages/%D0%93%D0%BE%D1%80%D0%BE%D0%B4%D1%81%D0%BA%D0%BE%D0%B9-%D0%BA%D0%B0%D0%B4%D0%B0%D1%81%D1%82%D1%80-%D0%9E%D0%9E%D0%9E-%D0%91%D0%93%D0%A2%D0%B8%D0%97-%D0%B3-%D0%91%D0%B5%D1%80%D0%B5%D0%B7%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9/607321492670599"><img src = "/sites/all/themes/bgtz/images/facebook.png"></a>
+              <a target="_blank" href="http://vk.com/public67126108"><img src = "/sites/all/themes/bgtz/images/vk.png"></a>
+            </div>
+
           </hgroup><!-- /end #name-and-slogan -->
         <?php endif; ?>
 
