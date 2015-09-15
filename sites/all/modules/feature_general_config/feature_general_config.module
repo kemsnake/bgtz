@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Feature General config feature.
+ */
+
+include_once 'feature_general_config.features.inc';
