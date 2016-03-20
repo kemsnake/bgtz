@@ -68,7 +68,7 @@ function _webform_edit_hidden($component) {
 /**
  * Implements _webform_render_component().
  */
-function _webform_render_hidden($component, $value = NULL, $filter = TRUE) {
+function _webform_render_hidden($component, $value = NULL, $filter = TRUE, $submission = NULL) {
   $node = isset($component['nid']) ? node_load($component['nid']) : NULL;
 
   $default_value = $filter ? webform_replace_tokens($component['value'], $node) : $component['value'];
@@ -77,7 +77,7 @@ function _webform_render_hidden($component, $value = NULL, $filter = TRUE) {
   }
 
   $element = array(
-    '#title' => $filter ? webform_filter_xss($component['name']) : $component['name'],
+    '#title' => $filter ? NULL : $component['name'],
     '#weight' => $component['weight'],
     '#translatable' => array('title'),
   );
@@ -89,6 +89,12 @@ function _webform_render_hidden($component, $value = NULL, $filter = TRUE) {
   else {
     $element['#type'] = 'hidden';
     $element['#default_value'] = $default_value;
+
+    // Same-page conditionals depend on the wrapper around elements for getting
+    // values. Wrap, but hide, the wrapper around hidden elements.
+    $element['#theme_wrappers'] = array('webform_element');
+    $element['#wrapper_attributes']['class'] = array();
+    $element['#wrapper_attributes']['style'] = array('display: none');
   }
 
   return $element;
@@ -97,7 +103,7 @@ function _webform_render_hidden($component, $value = NULL, $filter = TRUE) {
 /**
  * Implements _webform_display_component().
  */
-function _webform_display_hidden($component, $value, $format = 'html') {
+function _webform_display_hidden($component, $value, $format = 'html', $submission = array()) {
   $element = array(
     '#title' => $component['name'],
     '#markup' => isset($value[0]) ? $value[0] : NULL,
@@ -120,14 +126,18 @@ function theme_webform_display_hidden($variables) {
 /**
  * Implements _webform_analysis_component().
  */
-function _webform_analysis_hidden($component, $sids = array()) {
+function _webform_analysis_hidden($component, $sids = array(), $single = FALSE, $join = NULL) {
   $query = db_select('webform_submitted_data', 'wsd', array('fetch' => PDO::FETCH_ASSOC))
     ->fields('wsd', array('no', 'data'))
-    ->condition('nid', $component['nid'])
-    ->condition('cid', $component['cid']);
+    ->condition('wsd.nid', $component['nid'])
+    ->condition('wsd.cid', $component['cid']);
 
   if (count($sids)) {
-    $query->condition('sid', $sids, 'IN');
+    $query->condition('wsd.sid', $sids, 'IN');
+  }
+
+  if ($join) {
+    $query->innerJoin($join, 'ws2_', 'wsd.sid = ws2_.sid');
   }
 
   $nonblanks = 0;
@@ -158,6 +168,14 @@ function _webform_analysis_hidden($component, $sids = array()) {
  */
 function _webform_table_hidden($component, $value) {
   return check_plain(empty($value[0]) ? '' : $value[0]);
+}
+
+/**
+ * Implements _webform_action_set_component().
+ */
+function _webform_action_set_hidden($component, &$element, &$form_state, $value) {
+  $element['#value'] = $value;
+  form_set_value($element, $value, $form_state);
 }
 
 /**
